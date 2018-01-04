@@ -1,10 +1,3 @@
-
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
-(package-initialize)
-
 (defun previous-blank-line ()
   "Moves to the previous empty line"
   (interactive)
@@ -75,19 +68,23 @@
 	  (lambda () (setq desktop-save-buffer t)))
 ;(global-hl-line-mode 1)
 
+
 (if (equal system-type 'windows-nt)
     (progn
+      (defconst VS2015_MsBuild_Path (getenv "VS140COMNTOOLS"))
+      (defconst VS2017_MsBuild_Path (getenv "VS160COMNTOOLS"))
+      (defconst MsBuild_FileName "VsMSBuildCmd.bat")
       (if (equal (getenv "HOME") nil)
 	  (print "HOME variable is undefined")
 	)
-      (if (equal (require 'cygwin-mount nil t) nil)
-	  (print "cygwin-mount missing from load-path folder")
-	)
-      (cygwin-mount-activate)
-      (setq explicit-shell-file-name "bash")
-      (setq shell-file-name explicit-shell-file-name)
-      (add-hook 'comint-output-filter-functions 'shell-strip-ctrl-m nil t)
-      (add-hook 'comint-output-filter-functions 'comint-watch-for-password-prompt nil t)
+;      (if (equal (require 'cygwin-mount nil t) nil)
+;	  (print "cygwin-mount missing from load-path folder")
+;	)
+;      (cygwin-mount-activate)
+;      (setq explicit-shell-file-name "bash")
+;      (setq shell-file-name explicit-shell-file-name)
+;      (add-hook 'comint-output-filter-functions 'shell-strip-ctrl-m nil t)
+;      (add-hook 'comint-output-filter-functions 'comint-watch-for-password-prompt nil t)
       (print "Setup windows environment succesfully")
       )
   )
