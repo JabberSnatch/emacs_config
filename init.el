@@ -9,7 +9,7 @@
     (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
 (package-initialize)
 
-(defconst modern-cc-mode-path (file-truename (concat (getenv "HOME") "/.emacs.d/site-lisp/cc-mode-5.33")))
+(defconst modern-cc-mode-path (file-truename "~/.emacs.d/site-lisp/cc-mode-5.33")))
 (byte-recompile-directory modern-cc-mode-path)
 (add-to-list 'load-path modern-cc-mode-path)
 
