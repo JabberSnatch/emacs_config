@@ -9,10 +9,18 @@
     (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
 (package-initialize)
 
-(defconst modern-cc-mode-path (file-truename "~/.emacs.d/site-lisp/cc-mode-5.33")))
+(defconst modern-cc-mode-path (file-truename "~/.emacs.d/site-lisp/cc-mode-5.33"))
 (byte-recompile-directory modern-cc-mode-path)
 (add-to-list 'load-path modern-cc-mode-path)
 
+
+(defun maximize-frame ()
+  "Maximize the current frame"
+  (interactive)
+  (if (eq system-type 'windows-nt)
+      (w32-send-sys-command 61488)
+    )
+  )
 
 (defun previous-blank-line ()
   "Moves to the previous empty line"
@@ -34,11 +42,19 @@
     )
   )
 
+(defun safe-backward-kill-word ()
+  "Kill characters backward until encountering the beginning of a word or a newline character."
+  (interactive "*")
+  (let ((orig (point)))
+    (skip-syntax-backward "\sw")
+    (delete-region (point) orig)))
+
+(defalias 'list-buffers 'ibuffer)
+  
 (global-set-key (kbd "M-p") 'previous-blank-line)
 (global-set-key (kbd "M-n") 'next-blank-line)
 (global-set-key (kbd "C-'") 'whitespace-mode)
 
-(defalias 'list-buffers 'ibuffer)
 
 (setq c-echo-syntactic-information-p t)
 (c-add-style "yolosquad"
@@ -83,6 +99,7 @@
 (set-background-color "#161616")
 (set-cursor-color "#40FF40")
 
+
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
@@ -100,7 +117,10 @@
 ;;(add-hook 'after-change-major-mode-hook
 ;;	  (lambda () (setq desktop-save-buffer t)))
 ;;(global-hl-line-mode 1)
-
+(add-hook 'window-setup-hook
+	  (lambda ()
+	    (maximize-frame)
+	    (split-window-horizontally)))
 
 
 (if (equal system-type 'windows-nt)
