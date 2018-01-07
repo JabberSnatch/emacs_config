@@ -22,16 +22,20 @@
     )
   )
 
+
+;; TODO: "slide-line" function that emulates VS [M-up] [M-down] bindings
+
+;; TODO: both of these should consider // as a blank line
 (defun previous-blank-line ()
   "Moves to the previous empty line"
   (interactive)
   (forward-line -1)
+  (forward-char)
   (if (search-backward-regexp ".\n[ \t]*\n" nil t)
       (forward-line)
     (goto-char (point-min))
     )
   )
-
 (defun next-blank-line ()
   "Moves to the next empty line"
   (interactive)
@@ -42,18 +46,38 @@
     )
   )
 
+;; TODO: Look into syntax table manual entry
+;; any _t suffixed word should be treated as a single word
+;; TODO: This function should stop after the first newline character encountered
+;; TODO: Add forward-kill-word
 (defun safe-backward-kill-word ()
-  "Kill characters backward until encountering the beginning of a word or a newline character."
+  "If point is on beginning of a word and touches the end of the previous word, kill the previous word. Otherwise kill back to  end of the previous word."
   (interactive "*")
-  (let ((orig (point)))
-    (skip-syntax-backward "\sw")
-    (delete-region (point) orig)))
+  (let ((normal-kill-p) (end-previous-word nil))
+    (save-excursion
+      (backward-char)
+      (let ((begin (point-marker)))
+	(backward-word)
+	(forward-word)
+	(setq end-previous-word (point-marker))
+	(setq normal-kill-p (<= begin end-previous-word))
+	)
+      )
+    (if normal-kill-p
+	(backward-kill-word 1)
+      (kill-region end-previous-word (point-marker))
+      )
+    )
+  )
+
 
 (defalias 'list-buffers 'ibuffer)
   
 (global-set-key (kbd "M-p") 'previous-blank-line)
 (global-set-key (kbd "M-n") 'next-blank-line)
 (global-set-key (kbd "C-'") 'whitespace-mode)
+(global-set-key (kbd "<C-backspace>") 'safe-backward-kill-word)
+
 
 
 (setq c-echo-syntactic-information-p t)
