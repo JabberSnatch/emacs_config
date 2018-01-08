@@ -128,6 +128,7 @@
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 (show-paren-mode 1)
+(column-number-mode 1)
 ;;(desktop-save-mode 1)
 (setq desktop-save 'ask-if-new)
 (setq desktop-dirname "~/")
