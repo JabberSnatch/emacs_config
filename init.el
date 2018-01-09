@@ -108,7 +108,11 @@
     )
   )
 
-
+(defun interactive-insert-tab ()
+  "Inserts a tab character"
+  (interactive "*")
+  (insert-tab)
+  )
 
 
 (defalias 'list-buffers 'ibuffer)
@@ -119,6 +123,9 @@
 (global-set-key (kbd "<C-backspace>") 'safe-backward-kill-word)
 (global-set-key (kbd "M-d") 'safe-forward-kill-word)
 (global-set-key (kbd "C-x r i") 'string-insert-rectangle)
+(global-set-key (kbd "<C-tab>") 'interactive-insert-tab)
+
+(put 'upcase-region 'disabled nil)
 
 
 
