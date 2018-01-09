@@ -48,27 +48,67 @@
 
 ;; TODO: Look into syntax table manual entry
 ;; any _t suffixed word should be treated as a single word
-;; TODO: This function should stop after the first newline character encountered
-;; TODO: Add forward-kill-word
 (defun safe-backward-kill-word ()
-  "If point is on beginning of a word and touches the end of the previous word, kill the previous word. Otherwise kill back to  end of the previous word."
+  "Kill previous word, just like backward-kill-word but treats newlines char as word beginnings and whitespace as words."
   (interactive "*")
-  (let ((normal-kill-p) (end-previous-word nil))
+  (let ((whitespace-delete-p) (end-previous-word nil) (end-previous-line nil))
     (save-excursion
       (backward-char)
       (let ((begin (point-marker)))
 	(backward-word)
 	(forward-word)
 	(setq end-previous-word (point-marker))
-	(setq normal-kill-p (<= begin end-previous-word))
+	(setq whitespace-delete-p (< end-previous-word begin))
 	)
       )
-    (if normal-kill-p
+    (save-excursion
+      (move-end-of-line 0)
+      (setq end-previous-line (point-marker))
+      )
+    (if (> end-previous-line end-previous-word)
+	(progn
+	  (kill-region end-previous-line (point-marker))
+	  (delete-horizontal-space)
+	  )
+      (if whitespace-delete-p
+	  (kill-region end-previous-word (point-marker))
 	(backward-kill-word 1)
-      (kill-region end-previous-word (point-marker))
+	)
       )
     )
   )
+
+(defun safe-forward-kill-word ()
+  "Kill next word, just like forward-kill-word, but treats newlines char as word ends and whitespace as words."
+  (interactive "*")
+  (let ((whitespace-delete-p) (begin-next-word nil) (begin-next-line nil))
+    (save-excursion
+      (forward-char)
+      (let ((begin (point-marker)))
+	(forward-word)
+	(backward-word)
+	(setq begin-next-word (point-marker))
+	(setq whitespace-delete-p (> begin-next-word begin))
+	)
+      )
+    (save-excursion
+      (move-beginning-of-line 2)
+      (setq begin-next-line (point-marker))
+      )
+    (if (< begin-next-line begin-next-word)
+	(progn
+	  (kill-region (point-marker) begin-next-line)
+	  (delete-horizontal-space)
+	  )
+      (if whitespace-delete-p
+	  (kill-region (point-marker) begin-next-word)
+	(kill-word 1)
+	)
+      )
+    )
+  )
+
+
 
 
 (defalias 'list-buffers 'ibuffer)
@@ -77,6 +117,8 @@
 (global-set-key (kbd "M-n") 'next-blank-line)
 (global-set-key (kbd "C-'") 'whitespace-mode)
 (global-set-key (kbd "<C-backspace>") 'safe-backward-kill-word)
+(global-set-key (kbd "M-d") 'safe-forward-kill-word)
+(global-set-key (kbd "C-x r i") 'string-insert-rectangle)
 
 
 
@@ -103,6 +145,7 @@
 ;;(add-hook 'c-mode-hook (lambda () (auto-fill-mode 1)))
 
 (setq make-backup-files nil)
+(setq scroll-step 3)
 
 (add-to-list 'default-frame-alist '(font . "Liberation Mono-10.5"))
 (set-face-attribute 'default t :font "Liberation Mono-10.5")
