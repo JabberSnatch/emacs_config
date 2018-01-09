@@ -24,6 +24,7 @@
 
 
 ;; TODO: "slide-line" function that emulates VS [M-up] [M-down] bindings
+;; TODO: "goto-opening/closing-brace" function that jumps to the next opening or closing brace
 
 ;; TODO: both of these should consider // as a blank line
 (defun previous-blank-line ()
