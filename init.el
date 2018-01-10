@@ -151,6 +151,14 @@
 (put 'upcase-region 'disabled nil)
 
 
+(defun c-lineup-arglist-wrapper (langelem)
+  "Line up the current line following c-lineup-arglist rules, but transforms its c-basic-offset returns into 0"
+  (let ((base-value (c-lineup-arglist langelem)))
+    (if (eq base-value c-basic-offset)
+	0
+      base-value)
+    )
+  )
 
 (setq c-echo-syntactic-information-p t)
 (c-add-style "yolosquad"
@@ -161,6 +169,7 @@
 		(substatement-open . 0)
 		(comment-intro . 0)
 		(inlambda . 0)
+		(arglist-cont-nonempty c-lineup-gcc-asm-reg c-lineup-arglist-wrapper)
 		)))
 
 (setq c-default-style
