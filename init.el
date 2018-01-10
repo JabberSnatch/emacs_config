@@ -23,8 +23,28 @@
   )
 
 
-;; TODO: "slide-line" function that emulates VS [M-up] [M-down] bindings
 ;; TODO: "goto-opening/closing-brace" function that jumps to the next opening or closing brace
+
+;; TODO: handle sliding whole regions
+(defun slide-line-up ()
+  "Swap the current line with the previous line dragging the point along"
+  (interactive)
+  (let ((point-offset-in-line (- (marker-position (point-marker)) (line-beginning-position))))
+    (transpose-lines 1)
+    (beginning-of-line -1)
+    (forward-char point-offset-in-line)
+    )
+  )
+(defun slide-line-down ()
+  "Swap the current line with the next line dragging the point along"
+  (interactive)
+  (let ((point-offset-in-line (- (marker-position (point-marker)) (line-beginning-position))))
+    (forward-line 1)
+    (transpose-lines 1)
+    (beginning-of-line 0)
+    (forward-char point-offset-in-line)
+    )
+  )
 
 ;; TODO: both of these should consider // as a blank line
 (defun previous-blank-line ()
@@ -125,6 +145,8 @@
 (global-set-key (kbd "M-d") 'safe-forward-kill-word)
 (global-set-key (kbd "C-x r i") 'string-insert-rectangle)
 (global-set-key (kbd "<C-tab>") 'interactive-insert-tab)
+(global-set-key (kbd "<M-up>") 'slide-line-up)
+(global-set-key (kbd "<M-down>") 'slide-line-down)
 
 (put 'upcase-region 'disabled nil)
 
