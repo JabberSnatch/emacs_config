@@ -160,6 +160,21 @@
     )
   )
 
+
+(defun c-lineup-template-args-alt (langelem)
+  "Line up template argument lines under the first argument.
+To allow this function to be used in a list expression, nil is
+returned if there's no template argument on the first line.
+
+Works with: template-args-cont."
+  (save-excursion
+    (c-with-syntax-table c++-template-syntax-table
+      (beginning-of-line)
+      (backward-up-list 1)
+      (if (and (eq (char-after) ?<)
+	       (zerop (c-forward-token-2 1 nil (c-point 'eol))))
+	  (vector (current-column))))))
+
 (setq c-echo-syntactic-information-p t)
 (c-add-style "yolosquad"
 	     '((c-basic-offset . 4)
@@ -170,6 +185,7 @@
 		(comment-intro . 0)
 		(inlambda . 0)
 		(arglist-cont-nonempty c-lineup-gcc-asm-reg c-lineup-arglist-wrapper)
+		(template-args-cont . c-lineup-template-args-alt)
 		)))
 
 (setq c-default-style
@@ -277,6 +293,13 @@
 	)
       (if (equal (getenv "HOME") nil)
 	  (print "HOME variable is undefined")
+	)
+      (setq unix-tools-dir (getenv "UNIX_TOOLS_DIR"))
+      (if (equal unix-tools-dir nil)
+	  (print "UNIX_TOOLS_DIR environment variable is undefined")
+	(progn
+	  (setq find-program (concat unix-tools-dir "\\find.exe"))
+	  )
 	)
       (message "Setup windows environment succesfully")
       )
