@@ -1,26 +1,97 @@
 
-(require 'package)
-(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-                    (not (gnutls-available-p))))
-       (proto (if no-ssl "http" "https")))
-  (add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
-  (when (< emacs-major-version 24)
-    ;; For important compatibility libraries like cl-lib
-    (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
-(package-initialize)
+(defvar has-package-manager nil)
+(when (>= emacs-major-version 24)
+  (require 'package)
+  (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+		      (not (gnutls-available-p))))
+	 (proto (if no-ssl "http" "https")))
+    (add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
+    (when (< emacs-major-version 24)
+      ;; For important compatibility libraries like cl-lib
+      (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
+  (package-initialize)
+  (setq has-package-manager t)
+  )
 
 (defconst modern-cc-mode-path (file-truename "~/.emacs.d/site-lisp/cc-mode-5.33"))
 (byte-recompile-directory modern-cc-mode-path)
 (add-to-list 'load-path modern-cc-mode-path)
 
 
-(defun maximize-frame ()
-  "Maximize the current frame"
-  (interactive)
-  (if (eq system-type 'windows-nt)
-      (w32-send-sys-command 61488)
+(when (eq system-type 'windows-nt)
+  
+  (defun maximize-frame ()
+    "Maximize the current frame"
+    (interactive)
+    (w32-send-sys-command 61488)
     )
-  )
+
+  (when (eq has-package-manager t)
+    
+    (package-install 'msvc)
+    (add-to-list 'load-path (expand-file-name "msvc/" "~/.emacs.d"))
+    (require 'msvc)
+    (setq w32-pipe-read-delay 0)
+    (when (msvc-initialize)
+      (msvc-flags-load-db :parsing-buffer-delete-p t)
+      (add-hook 'c-mode-common-hook 'msvc-mode-on t)
+      )
+    (add-hook 'msvc-mode-hook
+	      (lambda ()
+		(local-unset-key (kbd "<C-f5>"))
+		(local-set-key (kbd "<C-f5>") 'msvc-mode-feature-build-project)
+		))
+
+    (defun msvc-load-solution (path version &optional target platform)
+      (interactive)
+      (if (eq target nil)
+	  (setq target "Release")
+	)
+      (if (eq platform nil)
+	  (setq platform "x64")
+	)
+      (msvc-activate-projects-after-parse :solution-file path
+					  :platform platform
+					  :configuration target
+					  :version version)
+      )
+
+    (defun msvc-load-project (path version &optional target platform)
+      (interactive)
+      (if (eq target nil)
+	  (setq target "Release")
+	)
+      (if (eq platform nil)
+	  (setq platform "x64")
+	)
+      (msvc-activate-projects-after-parse :project-file path
+					  :platform platform
+					  :configuration target
+					  :version version)
+      )
+    
+    (defun msvc-unload-all ()
+      (interactive)
+      (kill-matching-buffers "\*MSVC.*\*")
+      )
+    
+    ) ;; (when (eq has-package-manager t))
+  
+  (if (equal (getenv "HOME") nil)
+      (print "HOME variable is undefined")
+    )
+  
+  (setq unix-tools-dir (getenv "UNIX_TOOLS_DIR"))
+  (if (equal unix-tools-dir nil)
+      (print "UNIX_TOOLS_DIR environment variable is undefined")
+    (progn
+      (setq find-program (concat unix-tools-dir "\\find.exe"))
+      )
+    )
+  
+  (message "Setup windows environment succesfully")
+  
+  ) ;; (when (eq system-type 'windows-nt))
 
 
 ;; TODO: "goto-opening/closing-brace" function that jumps to the next opening or closing brace
@@ -245,65 +316,6 @@ Works with: template-args-cont."
 	    (maximize-frame)
 	    (split-window-horizontally)))
 
-
-(if (equal system-type 'windows-nt)
-    (progn
-      (package-install 'msvc)
-      (add-to-list 'load-path (expand-file-name "msvc/" "~/.emacs.d"))
-      (require 'msvc)
-      (setq w32-pipe-read-delay 0)
-      (when (msvc-initialize)
-	(msvc-flags-load-db :parsing-buffer-delete-p t)
-	(add-hook 'c-mode-common-hook 'msvc-mode-on t)
-	)
-      (add-hook 'msvc-mode-hook
-		(lambda ()
-		  (local-unset-key (kbd "<C-f5>"))
-		  (local-set-key (kbd "<C-f5>") 'msvc-mode-feature-build-project)
-		  ))
-      (defun msvc-load-solution (path version &optional target platform)
-	(interactive)
-	(if (eq target nil)
-	    (setq target "Release")
-	  )
-	(if (eq platform nil)
-	    (setq platform "x64")
-	  )
-	(msvc-activate-projects-after-parse :solution-file path
-					    :platform platform
-					    :configuration target
-					    :version version)
-	)
-      (defun msvc-load-project (path version &optional target platform)
-	(interactive)
-	(if (eq target nil)
-	    (setq target "Release")
-	  )
-	(if (eq platform nil)
-	    (setq platform "x64")
-	  )
-	(msvc-activate-projects-after-parse :project-file path
-					    :platform platform
-					    :configuration target
-					    :version version)
-	)
-      (defun msvc-unload-all ()
-	(interactive)
-	(kill-matching-buffers "\*MSVC.*\*")
-	)
-      (if (equal (getenv "HOME") nil)
-	  (print "HOME variable is undefined")
-	)
-      (setq unix-tools-dir (getenv "UNIX_TOOLS_DIR"))
-      (if (equal unix-tools-dir nil)
-	  (print "UNIX_TOOLS_DIR environment variable is undefined")
-	(progn
-	  (setq find-program (concat unix-tools-dir "\\find.exe"))
-	  )
-	)
-      (message "Setup windows environment succesfully")
-      )
-  )
 
 
 (custom-set-variables
