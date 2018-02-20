@@ -95,6 +95,7 @@
 
 
 ;; TODO: "goto-opening/closing-brace" function that jumps to the next opening or closing brace
+;; TODO: "cycle-kill-buffer" function that replaces the current region with the next entry in the kill buffer
 
 ;; TODO: handle sliding whole regions
 (defun slide-line-up ()
@@ -118,6 +119,7 @@
   )
 
 ;; TODO: both of these should consider // as a blank line
+;;	 private: public: and protected: should be used as markers as well
 (defun previous-blank-line ()
   "Moves to the previous empty line"
   (interactive)
