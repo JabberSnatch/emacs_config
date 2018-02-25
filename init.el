@@ -19,7 +19,7 @@
 
 
 (when (eq system-type 'windows-nt)
-  
+
   (defun maximize-frame ()
     "Maximize the current frame"
     (interactive)
@@ -27,7 +27,7 @@
     )
 
   (when (eq has-package-manager t)
-    
+
     (package-install 'msvc)
     (add-to-list 'load-path (expand-file-name "msvc/" "~/.emacs.d"))
     (require 'msvc)
@@ -69,18 +69,18 @@
 					  :configuration target
 					  :version version)
       )
-    
+
     (defun msvc-unload-all ()
       (interactive)
       (kill-matching-buffers "\*MSVC.*\*")
       )
-    
+
     ) ;; (when (eq has-package-manager t))
-  
+
   (if (equal (getenv "HOME") nil)
       (print "HOME variable is undefined")
     )
-  
+
   (setq unix-tools-dir (getenv "UNIX_TOOLS_DIR"))
   (if (equal unix-tools-dir nil)
       (print "UNIX_TOOLS_DIR environment variable is undefined")
@@ -88,9 +88,9 @@
       (setq find-program (concat unix-tools-dir "\\find.exe"))
       )
     )
-  
+
   (message "Setup windows environment succesfully")
-  
+
   ) ;; (when (eq system-type 'windows-nt))
 
 
@@ -210,7 +210,7 @@
 
 
 (defalias 'list-buffers 'ibuffer)
-  
+
 (global-set-key (kbd "M-p") 'previous-blank-line)
 (global-set-key (kbd "M-n") 'next-blank-line)
 (global-set-key (kbd "C-'") 'whitespace-mode)
@@ -271,6 +271,7 @@ Works with: template-args-cont."
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 
 ;;(add-hook 'c-mode-hook (lambda () (auto-fill-mode 1)))
+;;(add-hook 'c-mode-hook (lambda () (add-to-list 'write-file-functions 'delete-trailing-whitespace)))
 
 (setq make-backup-files nil)
 (setq scroll-step 3)
@@ -317,7 +318,7 @@ Works with: template-args-cont."
 	  (lambda ()
 	    (maximize-frame)
 	    (split-window-horizontally)))
-
+(setq-default show-trailing-whitespace t)
 
 
 (custom-set-variables
