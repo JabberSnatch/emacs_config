@@ -257,6 +257,7 @@ Works with: template-args-cont."
 		(substatement-open . 0)
 		(comment-intro . 0)
 		(inlambda . 0)
+		(inline-open . 0)
 		(arglist-cont-nonempty c-lineup-gcc-asm-reg c-lineup-arglist-wrapper)
 		(template-args-cont . c-lineup-template-args-alt)
 		)))
