@@ -320,6 +320,7 @@ Works with: template-args-cont."
 	    (maximize-frame)
 	    (split-window-horizontally)))
 (setq-default show-trailing-whitespace t)
+(setq-default tab-width 4)
 
 
 (custom-set-variables
