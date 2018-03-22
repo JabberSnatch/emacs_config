@@ -220,6 +220,7 @@
 (global-set-key (kbd "<C-tab>") 'interactive-insert-tab)
 (global-set-key (kbd "<M-up>") 'slide-line-up)
 (global-set-key (kbd "<M-down>") 'slide-line-down)
+(global-set-key (kbd "<M-RET>") 'electric-indent-just-newline)
 
 (put 'upcase-region 'disabled nil)
 
