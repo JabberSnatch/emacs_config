@@ -216,11 +216,11 @@
 (global-set-key (kbd "C-'") 'whitespace-mode)
 (global-set-key (kbd "<C-backspace>") 'safe-backward-kill-word)
 (global-set-key (kbd "M-d") 'safe-forward-kill-word)
-(global-set-key (kbd "C-x r i") 'string-insert-rectangle)
 (global-set-key (kbd "<C-tab>") 'interactive-insert-tab)
 (global-set-key (kbd "<M-up>") 'slide-line-up)
 (global-set-key (kbd "<M-down>") 'slide-line-down)
 (global-set-key (kbd "<M-RET>") 'electric-indent-just-newline)
+;;(global-set-key (kbd "C-x r i") 'string-insert-rectangle)
 
 (put 'upcase-region 'disabled nil)
 
@@ -304,6 +304,7 @@ Works with: template-args-cont."
 (show-paren-mode 1)
 (column-number-mode 1)
 ;;(desktop-save-mode 1)
+(delete-selection-mode 1)
 (setq desktop-save 'ask-if-new)
 (setq desktop-dirname "~/")
 (setq desktop-base-file-name ".emacs.desktop")
@@ -336,3 +337,6 @@ Works with: template-args-cont."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+(put 'scroll-left 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
