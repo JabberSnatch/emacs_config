@@ -18,6 +18,11 @@
 (add-to-list 'load-path modern-cc-mode-path)
 
 
+(defun maximize-frame ()
+  "Maximize the current frame (noop version)"
+  (interactive)
+  )
+
 (when (eq system-type 'windows-nt)
 
   (defun maximize-frame ()
@@ -221,6 +226,7 @@
 (global-set-key (kbd "<M-down>") 'slide-line-down)
 (global-set-key (kbd "<M-RET>") 'electric-indent-just-newline)
 ;;(global-set-key (kbd "C-x r i") 'string-insert-rectangle)
+(global-set-key (kbd "C-x M-o") (kbd "C-u -1 C-x o"))
 
 (put 'upcase-region 'disabled nil)
 
@@ -261,6 +267,7 @@ Works with: template-args-cont."
 		(inline-open . 0)
 		(arglist-cont-nonempty c-lineup-gcc-asm-reg c-lineup-arglist-wrapper)
 		(template-args-cont . c-lineup-template-args-alt)
+		(inher-intro . 0) ;; should be + but inheritance list are considered "inclass", which is already indented
 		)))
 
 (setq c-default-style
