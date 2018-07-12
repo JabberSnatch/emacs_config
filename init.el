@@ -300,6 +300,7 @@ Works with: template-args-cont."
 (setq make-backup-files nil)
 (setq scroll-step 3)
 
+(global-hl-line-mode 1)
 (add-to-list 'default-frame-alist '(font . "Liberation Mono-10.5"))
 (set-face-attribute 'default t :font "Liberation Mono-10.5")
 (set-face-attribute 'font-lock-builtin-face nil :foreground "#DAB98F")
@@ -316,6 +317,7 @@ Works with: template-args-cont."
 (set-face-attribute 'font-lock-variable-name-face nil :foreground "burlywood3")
 (set-face-attribute 'escape-glyph nil :foreground "coral" :background "firebrick")
 (set-foreground-color "burlywood3")
+(set-face-background hl-line-face "#1A1A1A")
 (set-background-color "#161616")
 (set-cursor-color "#40FF40")
 
