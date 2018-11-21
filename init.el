@@ -125,26 +125,35 @@
     )
   )
 
+
 ;; TODO: both of these should consider // as a blank line
 ;;	 private: public: and protected: should be used as markers as well
 (defun previous-blank-line ()
   "Moves to the previous empty line"
   (interactive)
-  (forward-line -1)
-  (forward-char)
-  (if (search-backward-regexp ".\n[ \t]*\n" nil t)
-      (forward-line)
-    (goto-char (point-min))
-    )
+  (setq first-end (point))
+  (setq end (point))
+  (setq point-backup (point))
+  (while (eq first-end end)
+	(setq result (point))
+	(search-backward-regexp "^\\([ \t]*\\(//\\)*[ \t]*\r?\n\\)+" nil t)
+	(setq point-backup (point))
+	(search-forward-regexp "^\\([ \t]*\\(//\\)*[ \t]*\r?\n\\)+" nil t)
+	(setq end (point))
+	(set-window-point nil point-backup)
+	(print end)
+	)
+  (print (match-beginning 0))
   )
 (defun next-blank-line ()
   "Moves to the next empty line"
   (interactive)
   (forward-line)
-  (if (search-forward-regexp "^[ \t]*\n." nil t)
+  (if (search-forward-regexp "^\\([ \t]*\\(//\\)*[ \t]*\r?\n\\)+" nil t)
       (forward-line -1)
     (goto-char (point-max))
     )
+  (print (match-beginning 0))
   )
 
 ;; TODO: Look into syntax table manual entry
