@@ -31,6 +31,7 @@
     (w32-send-sys-command 61488)
     )
 
+  (if (eq 0 1)
   (when (eq has-package-manager t)
 
     (package-install 'msvc)
@@ -81,6 +82,7 @@
       )
 
     ) ;; (when (eq has-package-manager t))
+  ) ;; (if (eq 0 1))
 
   (if (equal (getenv "HOME") nil)
       (print "HOME variable is undefined")
@@ -317,7 +319,7 @@ Works with: template-args-cont."
 (set-face-attribute 'font-lock-variable-name-face nil :foreground "burlywood3")
 (set-face-attribute 'escape-glyph nil :foreground "coral" :background "firebrick")
 (set-foreground-color "burlywood3")
-(set-face-background hl-line-face "#1A1A1A")
+(set-face-background hl-line-face "#202020")
 (set-background-color "#161616")
 (set-cursor-color "#40FF40")
 
