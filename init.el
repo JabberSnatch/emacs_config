@@ -222,9 +222,9 @@
    "/*
  * ----------------------------------------------------------------------------
  * \"THE BEER-WARE LICENSE\" (Revision 42):
- * Samuel Bourasseau wrote this file. As long as you retain this notice you
- * can do whatever you want with this stuff. If we meet some day, and you think
- * this stuff is worth it, you can buy me a beer in return.
+ * Samuel Bourasseau wrote this file. You can do whatever you want with this
+ * stuff. If we meet some day, and you think this stuff is worth it, you can
+ * buy me a beer in return.
  * ----------------------------------------------------------------------------
  */")
   )
@@ -273,9 +273,10 @@ Works with: template-args-cont."
 	  (vector (current-column))))))
 
 (setq c-echo-syntactic-information-p t)
-(c-add-style "yolosquad"
+(c-add-style "yolosquad4"
 	     '((c-basic-offset . 4)
 	       (tab-width . 4)
+		   (indent-tabs-mode . nil)
 	       (c-offsets-alist
 		(innamespace . 0)
 		(substatement-open . 0)
@@ -287,12 +288,28 @@ Works with: template-args-cont."
 		(inher-intro . 0) ;; should be + but inheritance list are considered "inclass", which is already indented
 		)))
 
-(setq c-default-style
-      '((java-mode . "java")
-	(awk-mode . "awk")
-	(c-mode . "yolosquad")
-	(c++-mode . "yolosquad")
-	(other . "gnu")))
+(c-add-style "yolosquad2"
+			 '("yolosquad4"
+			   (c-basic-offset . 2)
+			   (tab-width . 2)
+			   ))
+
+(defun c-style-switch-c++ (style-name)
+  (message style-name)
+  (setq c-default-style
+		(list (cons 'java-mode "java")
+		  (cons 'awk-mode "awk")
+		  (cons 'c-mode style-name)
+		  (cons 'c++-mode style-name)
+		  (cons 'other "gnu"))))
+
+(defun c-style-switch-to-2wide ()
+  (c-style-switch-c++ "yolosquad2"))
+(defun c-style-switch-to-4wide ()
+  (c-style-switch-c++ "yolosquad4"))
+
+(c-style-switch-to-4wide)
+
 
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 
