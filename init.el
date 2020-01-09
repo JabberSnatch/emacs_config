@@ -17,7 +17,6 @@
 (byte-recompile-directory modern-cc-mode-path)
 (add-to-list 'load-path modern-cc-mode-path)
 
-
 (defun maximize-frame ()
   "Maximize the current frame (noop version)"
   (interactive)
@@ -31,58 +30,11 @@
     (w32-send-sys-command 61488)
     )
 
-  (if (eq 0 1)
-  (when (eq has-package-manager t)
-
-    (package-install 'msvc)
-    (add-to-list 'load-path (expand-file-name "msvc/" "~/.emacs.d"))
-    (require 'msvc)
-    (setq w32-pipe-read-delay 0)
-    (when (msvc-initialize)
-      (msvc-flags-load-db :parsing-buffer-delete-p t)
-      (add-hook 'c-mode-common-hook 'msvc-mode-on t)
-      )
-    (add-hook 'msvc-mode-hook
-	      (lambda ()
-		(local-unset-key (kbd "<C-f5>"))
-		(local-set-key (kbd "<C-f5>") 'msvc-mode-feature-build-project)
-		))
-
-    (defun msvc-load-solution (path version &optional target platform)
-      (interactive)
-      (if (eq target nil)
-	  (setq target "Release")
+  (defun w32-open-work-dir ()
+	"Opens an explorer window on the working directory."
+	(interactive)
+	(w32-shell-execute 'explore default-directory)
 	)
-      (if (eq platform nil)
-	  (setq platform "x64")
-	)
-      (msvc-activate-projects-after-parse :solution-file path
-					  :platform platform
-					  :configuration target
-					  :version version)
-      )
-
-    (defun msvc-load-project (path version &optional target platform)
-      (interactive)
-      (if (eq target nil)
-	  (setq target "Release")
-	)
-      (if (eq platform nil)
-	  (setq platform "x64")
-	)
-      (msvc-activate-projects-after-parse :project-file path
-					  :platform platform
-					  :configuration target
-					  :version version)
-      )
-
-    (defun msvc-unload-all ()
-      (interactive)
-      (kill-matching-buffers "\*MSVC.*\*")
-      )
-
-    ) ;; (when (eq has-package-manager t))
-  ) ;; (if (eq 0 1))
 
   (if (equal (getenv "HOME") nil)
       (print "HOME variable is undefined")
@@ -244,6 +196,11 @@
 (global-set-key (kbd "<M-RET>") 'electric-indent-just-newline)
 ;;(global-set-key (kbd "C-x r i") 'string-insert-rectangle)
 (global-set-key (kbd "C-x M-o") (kbd "C-u -1 C-x o"))
+
+(when (eq system-type 'windows-nt)
+  (global-set-key (kbd "M-E") 'w32-open-work-dir)
+  ) ;; (when (eq system-type 'windows-nt))
+
 
 (put 'upcase-region 'disabled nil)
 
