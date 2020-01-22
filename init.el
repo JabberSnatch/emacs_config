@@ -229,11 +229,12 @@ Works with: template-args-cont."
 	       (zerop (c-forward-token-2 1 nil (c-point 'eol))))
 	  (vector (current-column))))))
 
+
 (setq c-echo-syntactic-information-p t)
 (c-add-style "yolosquad4"
 	     '((c-basic-offset . 4)
 	       (tab-width . 4)
-		   (indent-tabs-mode . nil)
+           (indent-tabs-mode . nil)
 	       (c-offsets-alist
 		(innamespace . 0)
 		(substatement-open . 0)
@@ -251,22 +252,47 @@ Works with: template-args-cont."
 			   (tab-width . 2)
 			   ))
 
+(c-add-style "half-indent-bs"
+             '("yolosquad4"
+               (c-offsets-alist
+                (access-label . -2)
+                )))
+
+(c-add-style "yolosquad4-tabs"
+             '("yolosquad4"
+	       (indent-tabs-mode . t)
+	       (c-offsets-alist
+			(innamespace . +)
+			)
+	       ))
+
+(setq ys-current-c-style "yolosquad4")
+
 (defun c-style-switch-c++ (style-name)
   (message style-name)
+  (setq ys-current-c-style style-name)
   (setq c-default-style
 		(list (cons 'java-mode "java")
-		  (cons 'awk-mode "awk")
-		  (cons 'c-mode style-name)
-		  (cons 'c++-mode style-name)
-		  (cons 'other "gnu"))))
+			  (cons 'awk-mode "awk")
+			  (cons 'c-mode ys-current-c-style)
+			  (cons 'c++-mode ys-current-c-style)
+			  (cons 'other "gnu")))
+)
+(add-hook 'c-mode-hook (lambda () (c-set-style ys-current-c-style)))
+(add-hook 'c++-mode-hook (lambda () (c-set-style ys-current-c-style)))
 
 (defun c-style-switch-to-2wide ()
+  (interactive)
   (c-style-switch-c++ "yolosquad2"))
 (defun c-style-switch-to-4wide ()
+  (interactive)
   (c-style-switch-c++ "yolosquad4"))
-
-(c-style-switch-to-4wide)
-
+(defun c-style-switch-to-tabs ()
+  (interactive)
+  (c-style-switch-c++ "yolosquad4-tabs"))
+(defun c-style-switch-to-half-indent ()
+  (interactive)
+  (c-style-switch-c++ "half-indent-bs"))
 
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 
@@ -323,6 +349,7 @@ Works with: template-args-cont."
 	    (split-window-horizontally)))
 (setq-default show-trailing-whitespace t)
 (setq-default tab-width 4)
+;;(setq-default indent-tabs-mode nil)
 
 
 (custom-set-variables
