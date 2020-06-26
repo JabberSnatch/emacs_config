@@ -13,7 +13,7 @@
   (setq has-package-manager t)
   )
 
-(defconst modern-cc-mode-path (file-truename "~/.emacs.d/site-lisp/cc-mode-5.33"))
+(defconst modern-cc-mode-path (file-truename "~/.emacs.d/site-lisp/cc-mode-5.34"))
 (byte-recompile-directory modern-cc-mode-path)
 (add-to-list 'load-path modern-cc-mode-path)
 
@@ -236,7 +236,9 @@ Works with: template-args-cont."
 	       (tab-width . 4)
            (indent-tabs-mode . nil)
 	       (c-offsets-alist
+		(arglist-close . 0)
 		(innamespace . 0)
+		(inextern-lang . 0)
 		(substatement-open . 0)
 		(comment-intro . 0)
 		(inlambda . 0)
@@ -244,6 +246,7 @@ Works with: template-args-cont."
 		(arglist-cont-nonempty c-lineup-gcc-asm-reg c-lineup-arglist-wrapper)
 		(template-args-cont . c-lineup-template-args-alt)
 		(inher-intro . 0) ;; should be + but inheritance list are considered "inclass", which is already indented
+		(cpp-macro . 0)
 		)))
 
 (c-add-style "yolosquad2"
